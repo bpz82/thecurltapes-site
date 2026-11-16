@@ -3,12 +3,12 @@ window.CT_CONFIG = {
   // Shown in every "it didn't work" fallback and used for mailto links.
   email: 'thecurltapes@gmail.com',
 
-  // Form endpoints. On Cloudflare Pages these are served by /functions/api/*.js,
-  // on Netlify by netlify/functions (see netlify.toml). See README "Forms".
+  // Form endpoints. Posts go to the Netlify functions (pages are on GitHub
+  // Pages). If a request fails, the page falls back to a mailto link.
   endpoints: {
-    subscribe: '/api/subscribe',
-    contact: '/api/contact',
-    order: '/api/order'
+    subscribe: 'https://thecurltapes.netlify.app/api/subscribe',
+    contact: 'https://thecurltapes.netlify.app/api/contact',
+    order: 'https://thecurltapes.netlify.app/api/order'
   },
 
   store: {
