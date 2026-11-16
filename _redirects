@@ -1,0 +1,5 @@
+# Cloudflare Pages + Netlify redirects (same syntax).
+# Squarespace system paths that people may have bookmarked:
+/s/*        /    302
+/config/*   /    302
+/search     /    302

@@ -1,0 +1,22 @@
+/* Custom CSS carried over verbatim from the old site's code injection. */
+/* Master Times New Roman for ALL big titles - aggressive targeting */
+h1, h2, h3, h4,
+.sqs-block-content h1, .sqs-block-content h2, .sqs-block-content h3, .sqs-block-content h4,
+h1 *, h2 *, h3 *, h4 *,
+.portfolio-title, .blog-title, .entry-title, .product-title,
+.sqs-block-image .image-overlay-text, .image-block .sqs-block-content h1,
+.text-block h1, .text-block h2, .text-block h3,
+#header .header-nav-wrapper a,
+#site-title,
+.fe-block .sqs-block-content h1,
+section h1, section h2, section h3 {
+    font-family: 'Times New Roman', Times, serif !important;
+}
+
+/* Extra force for homepage overlay texts */
+#block-yui_3_17_2_1_1746900000000_*, 
+.image-overlay-text h1,
+.image-overlay-text h2,
+.image-overlay-text {
+    font-family: 'Times New Roman', Times, serif !important;
+}
