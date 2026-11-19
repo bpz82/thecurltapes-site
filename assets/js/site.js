@@ -1,6 +1,6 @@
 /* The Curl Tapes — site behaviour (vanilla JS, no dependencies).
    Header/mobile menu, home hover backgrounds, galleries, carousels, lightbox,
-   newsletter + contact forms, and the small cart. */
+   contact forms, and the small cart. */
 (function () {
   'use strict';
   var CFG = window.CT_CONFIG || {};
@@ -325,28 +325,6 @@
         });
       });
   }
-  function initNewsletter(form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      clearErrors(form);
-      if (!validate(form)) return;
-      var data = formToObject(form);
-      data.page = location.pathname;
-      var btn = $('button[type=submit]', form);
-      form.classList.add('ct-submitting');
-      post((CFG.endpoints || {}).subscribe || '/api/subscribe', data).then(function () {
-        var msg = $('.form-submission-text', form);
-        var body = $('.newsletter-form-body', form);
-        if (body) body.style.display = 'none';
-        if (msg) { msg.classList.remove('hidden'); msg.removeAttribute('hidden'); msg.setAttribute('role', 'status'); }
-      }).catch(function () {
-        var name = [data.fname, data.lname].filter(Boolean).join(' ');
-        showError(form, 'Sorry — the signup didn’t go through. You can join the list by emailing us at <a href="' +
-          mailtoLink('Add me to the email list', 'Please add me to The Curl Tapes email list.\n\nName: ' + name + '\nEmail: ' + data.email) +
-          '">' + EMAIL + '</a>.');
-      }).then(function () { form.classList.remove('ct-submitting'); });
-    });
-  }
   function initContact(form) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -373,7 +351,6 @@
     });
   }
   function initForms() {
-    $$('form[data-ct-form="newsletter"]').forEach(initNewsletter);
     $$('form[data-ct-form="contact"]').forEach(initContact);
   }
 
