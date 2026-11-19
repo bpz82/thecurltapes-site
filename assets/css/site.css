@@ -193,7 +193,3 @@ section.page-section[data-ct-header-offset] { padding-top: calc(30px + 1.65vw); 
 .product-list-container { margin-top: 10px; }
 /* spacing the (empty, removed) payment-messaging slot used to add on mobile */
 @media (max-width: 767px) { .product-detail .product-price { padding-bottom: 11px; } }
-
-/* footer = the contact email only (Blake t227u): compact, centred, no Squarespace section min-height */
-#footer-sections .page-section[data-section-id="6964372da1afa21e85a2258a"] { min-height: 0; }
-#footer-sections .page-section[data-section-id="6964372da1afa21e85a2258a"] > .content-wrapper { padding-top: 32px; padding-bottom: 32px; }
