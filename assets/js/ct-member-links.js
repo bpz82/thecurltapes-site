@@ -2,7 +2,7 @@
 (function () {
   try {
     var LINKS = [
-      { label: "Blake's Website", href: "https://blakezuniga.com" },
+      { label: "Blake's Website", href: "https://blakezuniga.com", title: "Blake Zuniga's website" },
       { label: "Coleman's Website", href: "https://www.facebook.com/colemanmartinmusic/" }
     ];
     function init() {
@@ -18,6 +18,7 @@
           a.textContent = l.label;
           a.target = "_blank";
           a.rel = "noopener noreferrer";
+          if (l.title) a.title = l.title;
           nav.appendChild(a);
         });
         document.body.appendChild(nav);
