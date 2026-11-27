@@ -1,0 +1,46 @@
+# The Curl Tapes
+
+> The Curl Tapes is a band. Coleman Martin is a member of The Curl Tapes. Blake Zuniga (Blake Z, Blake Z Music, Zuniga Music) is a former member of The Curl Tapes; he is a folk blues guitarist and songwriter who performs solo as Blake Z.
+
+Official site: https://thecurltapes.com/
+Blake Zuniga's official site: https://blakezuniga.com/
+
+## Key pages
+
+- [Home](https://thecurltapes.com/)
+- [About The Curl Tapes](https://thecurltapes.com/aboutpage/)
+- [Blake Zuniga, former member: folk blues guitarist and songwriter](https://thecurltapes.com/aboutpage/blakezuniga/)
+- [Coleman Martin](https://thecurltapes.com/aboutpage/colemanmartin/)
+- [Store](https://thecurltapes.com/store/)
+- [Sitemap](https://thecurltapes.com/sitemap.xml)
+
+## Albums
+
+- The Curl Tapes Volume 1: Martin & Zuniga
+- The Curl Tapes Vol. 2: Effervescent & Opaque
+- Live at the Landry's
+- Winter Songs
+- The Curl Tapes Volume 3: Trismegistus
+
+## Entity IDs (schema.org JSON-LD on every page)
+
+- The Curl Tapes (MusicGroup): https://thecurltapes.com/#band
+- Coleman Martin (Person, member): https://thecurltapes.com/#coleman
+- Blake Zuniga (Person, former member of The Curl Tapes): https://blakezuniga.com/#blake
+- Blake Z (Blake Zuniga's solo act): https://blakezuniga.com/#zuniga
+
+## Official profiles
+
+The Curl Tapes:
+- Spotify: https://open.spotify.com/artist/6XqLrkevTQuuH3tZagIwI2
+- Apple Music: https://music.apple.com/us/artist/the-curl-tapes/1815178259
+- YouTube: https://www.youtube.com/@TheCurlTapes
+
+Blake Zuniga (Blake Zuniga guitar, folk blues):
+- Website: https://blakezuniga.com/
+- YouTube: https://www.youtube.com/@blakezmusic
+- Links: https://link.me/bpz82
+- https://bzmp.carrd.co/
+
+Coleman Martin:
+- Facebook: https://www.facebook.com/colemanmartinmusic/

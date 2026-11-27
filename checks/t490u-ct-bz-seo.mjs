@@ -40,7 +40,17 @@ const COLEMAN_PAGES = ["aboutpage/colemanmartin/index.html", "cole-bio/index.htm
 const URL_META = /^<link rel="canonical"[^>]*>$|^<meta property="og:url"[^>]*>$|^<meta name="twitter:url"[^>]*>$/;
 const DESC_META = /^<meta name="description"[^>]*>$|^<meta property="og:description"[^>]*>$/;
 const NEW_LD = /<script type="application\/ld\+json">\{"@context":"https:\/\/schema\.org","@graph":.*?<\/script>\n?/s;
-const NAV_RE = /<nav id="ct-member-links"[^>]*>[\s\S]*?<\/nav>\n?/;
+// t495u (MEASUREMENT CHANGE): head lines t495u may drop or rewrite.
+const LB_LINE = '<script type="application/ld+json">{"address": "", "openingHours": "", "@context": "http://schema.org", "@type": "LocalBusiness"}</script>';
+const WS_LINE = /^<script type="application\/ld\+json">\{(?!"@context":"https:\/\/schema\.org","@graph")[^\n]*"@type": ?"WebSite"[^\n]*<\/script>$/;
+const apexUrl = (s) => {
+  let u = s.replace(/^https:\/\/www\.thecurltapes\.com/, "https://thecurltapes.com");
+  if (u === "https://thecurltapes.com") return `${u}/`;
+  const path = u.slice("https://thecurltapes.com".length);
+  if (!/\/$/.test(path) && !/\.[a-z0-9]{2,5}$/i.test(path) && !/[?#]/.test(path)) u += "/";
+  return u;
+};
+const NAV_RE =/<nav id="ct-member-links"[^>]*>[\s\S]*?<\/nav>\n?/;
 const EXPECTED_LINKS = [
   { label: "Blake's Website", href: "https://blakezuniga.com" },
   { label: "Coleman's Website", href: "https://www.facebook.com/colemanmartinmusic/" },
@@ -187,7 +197,17 @@ for (const p of PAGES) {
   if (!band) fail("A", `${p}: no MusicGroup @id ${BAND_ID}`);
   else {
     const mem = refIds(band.member);
-    if (!mem.includes(BLAKE_ID)) fail("A", `${p}: band.member lacks Blake`);
+    // MEASUREMENT CHANGE (Blake t495u, Nov 27 2026): Blake is a FORMER member. He must no longer be an unqualified
+    // band.member; he must be linked as former member via band.alumni (direct or OrganizationRole) or a band.member
+    // OrganizationRole with roleName "former member". Was: band.member must include Blake.
+    const isRole = (x) => x && typeof x === "object" && types(x).some((t) => /Role$/.test(t));
+    const former = (r) => /^former member$/i.test(String(r.roleName || ""));
+    const blakeIn = (v) => refIds(v).includes(BLAKE_ID);
+    if (mem.includes(BLAKE_ID)) fail("A", `${p}: band.member lists Blake as an unqualified current member (t495u: former member)`);
+    const viaAlumni = [].concat(band.alumni || []).some((x) => (isRole(x) ? blakeIn(x.alumni) && (!x.roleName || former(x)) : blakeIn(x)));
+    const viaRole = [].concat(band.member || []).some((x) => isRole(x) && blakeIn(x.member) && former(x));
+    if (!viaAlumni && !viaRole) fail("A", `${p}: band does not link Blake as a former member`);
+    for (const x of [].concat(band.member || [])) if (isRole(x) && blakeIn(x.member) && !former(x)) fail("A", `${p}: band.member Role for Blake is not "former member"`);
     const others = mem.filter((m) => m !== BLAKE_ID);
     const coleman = nodes.find((n) => others.includes(n["@id"]) && n.name === "Coleman Martin");
     if (!coleman) fail("A", `${p}: band.member lacks a Coleman Martin Person`);
@@ -253,8 +273,22 @@ for (const p of PAGES) {
   const [h1, b1] = splitHead(html), [h0, b0] = splitHead(bhtml);
   const bodyNow = b1.replace(NAV_RE, "");
   if (bodyNow !== b0) fail("D", `${p}: <body> differs from base beyond the static #ct-member-links nav`);
-  const headLines = (h, allowDesc) => h.replace(NEW_LD, "").split("\n").filter((l) => !URL_META.test(l) && !(allowDesc && DESC_META.test(l)));
+  // MEASUREMENT CHANGE (Blake t495u, Nov 27 2026): the empty Squarespace LocalBusiness JSON-LD line (approved delete) and
+  // the leftover Squarespace WebSite JSON-LD line are excluded from the head comparison (the WebSite line is validated
+  // below instead), and www.thecurltapes.com URLs in other head lines are compared after www->apex / trailing-slash
+  // normalisation. Every other head line must still be byte-identical to base.
+  const headLines = (h, allowDesc) => h.replace(NEW_LD, "").split("\n")
+    .filter((l) => !URL_META.test(l) && !(allowDesc && DESC_META.test(l)) && l !== LB_LINE && !WS_LINE.test(l))
+    .map((l) => l.replace(/https:\/\/www\.thecurltapes\.com[^"]*/g, apexUrl));
   const allowDesc = p === BLAKE_ABOUT;
+  for (const l of h1.split("\n").filter((l) => WS_LINE.test(l))) {
+    let j = null; try { j = JSON.parse(l.slice(l.indexOf(">") + 1, l.lastIndexOf("</script>"))); } catch {}
+    if (!j || j["@context"] !== "https://schema.org" || j.url !== `${APEX}/` || !String(j.description || "").trim()
+      || Object.keys(j).some((k) => !["@context", "@type", "@id", "url", "name", "description", "publisher"].includes(k)))
+      fail("D", `${p}: leftover WebSite JSON-LD line is not the t495u apex form: ${l.slice(0, 160)}`);
+  }
+  if ((h1.match(/<script type="application\/ld\+json">/g) || []).length > (h0.match(/<script type="application\/ld\+json">/g) || []).length + 1)
+    fail("D", `${p}: more JSON-LD blocks than base + the one t490u @graph block`);
   if (headLines(h1, allowDesc).join("\n") !== headLines(h0, allowDesc).join("\n")) fail("D", `${p}: <head> differs from base beyond allowed JSON-LD / URL / description lines`);
   // title text unchanged
   if ((h1.match(/<title>[\s\S]*?<\/title>/) || [""])[0] !== (h0.match(/<title>[\s\S]*?<\/title>/) || [""])[0]) fail("D", `${p}: <title> changed`);
